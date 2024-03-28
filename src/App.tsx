@@ -1,34 +1,78 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { Box, Flex, Grid, GridItem, HStack, Show } from "@chakra-ui/react";
+import { useState } from "react";
+import CustomerGrid from "./components/CustomerGrid";
+import CustomerHeading from "./components/CustomerHeading";
+import BranchList from "./components/BranchList";
+import NavBar from "./components/NavBar";
+import LoanTypeSelector from "./components/LoanTypeSelector";
+import SortSelector from "./components/SortSelector";
+import { LoanType } from "./hooks/useCustomers";
+import { Branch } from "./hooks/useBranches";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+export interface CustomerQuery {
+  branch: Branch ;
+  loantype: LoanType ;
+  sortOrder: string;
+  searchText: string;
 }
 
-export default App
+function App() {
+  const [customerQuery, setcustomerQuery] = useState<CustomerQuery>(
+    {} as CustomerQuery
+  );
+
+  return (
+    <Grid
+      templateAreas={{
+        base: `"nav" "main"`,
+        lg: `"nav nav" "aside main"`,
+      }}
+      templateColumns={{
+        base: "1fr",
+        lg: "250px 1fr",
+      }}
+    >
+      <GridItem area="nav">
+        <NavBar
+          onSearch={(searchText) =>
+            setcustomerQuery({ ...customerQuery, searchText })
+          }
+        />
+      </GridItem>
+      <Show above="lg">
+        <GridItem area="aside" paddingX={5}>
+          <BranchList
+            selectedBranch={customerQuery.branch}
+            onSelectBranch={(branch) =>
+              setcustomerQuery({ ...customerQuery, branch })
+            }
+          />
+        </GridItem>
+      </Show>
+      <GridItem area="main">
+        <Box paddingLeft={2}>
+          <CustomerHeading customerQuery={customerQuery} />
+          <Flex marginBottom={5}>
+            <Box marginRight={5}>
+              <LoanTypeSelector
+                selectedLoanType={customerQuery.loantype}
+                onSelectLoanType={(loantype) =>
+                  setcustomerQuery({ ...customerQuery, loantype })
+                }
+              />
+            </Box>
+            <SortSelector
+              sortOrder={customerQuery.sortOrder}
+              onSelectSortOrder={(sortOrder) =>
+                setcustomerQuery({ ...customerQuery, sortOrder })
+              }
+            />
+          </Flex>
+        </Box>
+        <CustomerGrid customerQuery={customerQuery} />
+      </GridItem>
+    </Grid>
+  );
+}
+
+export default App;
