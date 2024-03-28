@@ -6,14 +6,14 @@ import apiClient from "../services/api-client";
    results: T[];
   }
 
-// interface CustomerReq {
-//   BranchId: string ;
-//   LoanType: string ;
-//   Ordering: string;
-//   Search: string;
-// }
+ interface CustomerReq {
+   BranchId: string ;
+   LoanType: string ;
+  Ordering: string;
+   Search: string;
+ }
 
-const useData = <T>(endpoint: string, requestConfig?: FetchResponse<T>, deps?: any[]) => {
+const useData = <T>(endpoint: string, requestConfig?: CustomerReq, deps?: any[]) => {
   const [data, setData] = useState<T[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(false);
