@@ -9,6 +9,10 @@ interface Props {
 const SearchInput = ({ onSearch }: Props) => {
   const ref = useRef<HTMLInputElement>(null);
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onSearch(event.target.value);
+  };
+
   return (
     <form
       onSubmit={(event) => {
@@ -23,6 +27,7 @@ const SearchInput = ({ onSearch }: Props) => {
           borderRadius={20}
           placeholder="Search Customer Name, Code, Mobile Number..."
           variant="filled"
+          onChange={handleChange} // Add onChange handler
         />
       </InputGroup>
     </form>
